@@ -9,7 +9,7 @@ Salah satu teknik yang sering digunakan dalam sistem rekomendasi adalah Content-
 
 Secara keseluruhan, tujuan dari sistem rekomendasi anime adalah untuk memberikan pengalaman yang lebih personal dan efisien bagi pengguna dalam menemukan anime yang sesuai dengan selera mereka, yang pada akhirnya dapat meningkatkan kepuasan dan keterlibatan mereka dengan platform streaming anime.
 
-Proyek ini tidak hanya memiliki nilai praktis, tetapi juga dapat berfungsi sebagai kontribusi penting dalam edukasi dan keselamatan publik. Dengan mengotomatiskan identifikasi jamur, kita dapat memberikan solusi inovatif yang berguna bagi kolektor jamur, komunitas peneliti, dan masyarakat umum yang terpapar risiko konsumsi jamur yang salah [[7](https://jurnal.iaii.or.id/index.php/RESTI/article/view/5498)].
+[[7](https://jurnal.iaii.or.id/index.php/RESTI/article/view/5498)].
 
 ## Business Understanding
 Dalam industri hiburan digital, terutama pada platform streaming anime, pemirsa menghadapi tantangan besar untuk menemukan konten yang relevan di tengah banyaknya pilihan yang tersedia. Platform-platform besar seperti Crunchyroll, Netflix, dan Funimation memiliki ribuan judul anime yang terus berkembang setiap tahun. Namun, dengan semakin banyaknya pilihan yang ada, pengguna sering kali merasa kesulitan untuk menemukan anime yang sesuai dengan minat pribadi mereka. Masalah utama yang muncul adalah kesenjangan antara preferensi pengguna dengan informasi yang tersedia tentang konten anime, yang membuat proses pencarian menjadi memakan waktu dan kurang efisien.
@@ -56,16 +56,15 @@ Dataset **Anime Recommendations Database** yang diambil dari Kaggle ini berisi i
 - **members**: Jumlah anggota (pengguna) yang terdaftar atau mengikuti anime tersebut di platform MyAnimeList, yang mencerminkan seberapa populer anime tersebut di kalangan pengguna.
 
 ### Eksplorasi Data Awal
-Dataset yang digunakan berisi informasi tentang spesies jamur, termasuk label klasifikasi "edible" (dapat dimakan) atau "poisonous" (beracun) serta 22 atribut fisik lainnya. Tahap awal mencakup eksplorasi data untuk memahami distribusi atribut, identifikasi tipe data, dan analisis awal nilai-nilai yang ada pada setiap atribut.
 - ```python
   df.shape
   ```
   Kode tersebut memiliki luaran:
   ```python
-  (8124, 23)
+  (12294, 7)
   ```
-- Jumlah entri (baris): 8.124
-- Jumlah atribut (kolom): 23
+- Jumlah entri (baris): 12.294
+- Jumlah atribut (kolom): 7
 
 
 - ```python
@@ -73,111 +72,30 @@ Dataset yang digunakan berisi informasi tentang spesies jamur, termasuk label kl
   ```
   Kode tersebut memiliki luaran:
   ```python
-  Index(['class', 'cap-shape', 'cap-surface', 'cap-color', 'bruises', 'odor',
-       'gill-attachment', 'gill-spacing', 'gill-size', 'gill-color',
-       'stalk-shape', 'stalk-root', 'stalk-surface-above-ring',
-       'stalk-surface-below-ring', 'stalk-color-above-ring',
-       'stalk-color-below-ring', 'veil-type', 'veil-color', 'ring-number',
-       'ring-type', 'spore-print-color', 'population', 'habitat'],
-      dtype='object')
+  Index(['anime_id', 'name', 'genre', 'type', 'episodes', 'rating', 'members'], dtype='object')
   ```
 Melihat Nama variabel pada dataset
 
+### Cek Missing Value 
 - ```python
   df.isnull().sum()
   ```
   Kode tersebut memiliki luaran:
+
+![CekMissingValue](https://github.com/user-attachments/assets/f3b843e5-8269-4f4d-8880-56c4656c5f1d)
+
+
+Output dari perintah `df.isnull().sum()` menunjukkan jumlah nilai yang hilang (null) pada setiap kolom dalam dataset. Kolom **`anime_id`**, **`name`**, **`episodes`**, dan **`members`** tidak memiliki nilai yang hilang, masing-masing menunjukkan 0 nilai null. Namun, kolom **`genre`** memiliki 62 nilai null, yang menunjukkan bahwa ada 62 anime yang tidak memiliki informasi genre. Kolom **`type`** memiliki 25 nilai null, yang berarti 25 anime tidak memiliki tipe yang terdefinisi. Terakhir, kolom **`rating`** memiliki 230 nilai null, yang menunjukkan bahwa ada 230 anime yang tidak memiliki rating yang diberikan oleh pengguna. Nilai null ini perlu ditangani sebelum analisis lebih lanjut, misalnya dengan mengisi nilai yang hilang atau menghapus baris yang terkait.
+
+### Cek Duplicated Data 
+- ```python
+  print(duplicated_data)
+  ```
+  Kode tersebut memiliki luaran:
   
-![isNull](https://github.com/user-attachments/assets/d4a3117d-6d0b-400f-942a-7ffd65d4c1fd)
+![CekDuplicated](https://github.com/user-attachments/assets/6033d94f-6b6c-4093-9723-55a7ac2c4f45)
 
-Output tersebut menunjukkan bahwa tidak ada nilai yang hilang (null) dalam DataFrame, karena setiap kolom memiliki jumlah nilai kosong (atau nilai null) sama dengan 0. Artinya, data lengkap tersedia untuk semua kolom, dan tidak ada informasi yang hilang atau tidak tercatat di dalam dataset.
-
-- ```python
-  df.show()
-  ```
-  Kode tersebut memiliki luaran:
-
-| class | cap-shape | cap-surface | cap-color | bruises | odor | gill-attachment | gill-spacing | gill-size | gill-color | stalk-shape | stalk-root | stalk-surface-above-ring | stalk-surface-below-ring | stalk-color-above-ring | stalk-color-below-ring | veil-type | veil-color | ring-number | ring-type | spore-print-color | population | habitat |
-|-------|-----------|-------------|-----------|---------|------|-----------------|--------------|-----------|------------|-------------|------------|--------------------------|--------------------------|------------------------|------------------------|-----------|------------|-------------|-----------|-------------------|------------|---------|
-| p     | x         | s           | n         | t       | p    | f               | c            | n         | k          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | s          | u       |
-| e     | x         | s           | y         | t       | a    | f               | c            | b         | k          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | n          | g       |
-| e     | b         | s           | w         | t       | l    | f               | c            | b         | n          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | n          | m       |
-| p     | x         | y           | w         | t       | p    | f               | c            | n         | n          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | s          | u       |
-| e     | x         | s           | g         | f       | n    | f               | w            | b         | k          | t           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | e         | n                 | a          | g       |
-| e     | x         | y           | y         | t       | a    | f               | c            | b         | n          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | n          | g       |
-| e     | b         | s           | w         | t       | a    | f               | c            | b         | g          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | n          | m       |
-| e     | b         | y           | w         | t       | l    | f               | c            | b         | n          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | s          | m       |
-| p     | x         | y           | w         | t       | p    | f               | c            | n         | p          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | v          | g       |
-| e     | b         | s           | y         | t       | a    | f               | c            | b         | g          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | s          | m       |
-| e     | x         | y           | y         | t       | l    | f               | c            | b         | g          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | n          | g       |
-| e     | x         | y           | y         | t       | a    | f               | c            | b         | n          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | s          | m       |
-| e     | b         | s           | y         | t       | a    | f               | c            | b         | w          | e           | c          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | s          | g       |
-| p     | x         | y           | w         | t       | p    | f               | c            | n         | k          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | v          | u       |
-| e     | x         | f           | n         | f       | n    | f               | w            | b         | n          | t           | e          | s                        | f                        | w                      | w                      | p         | w          | o           | e         | k                 | a          | g       |
-| e     | s         | f           | g         | f       | n    | f               | c            | n         | k          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | y          | u       |
-| e     | f         | f           | w         | f       | n    | f               | w            | b         | k          | t           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | e         | n                 | a          | g       |
-| p     | x         | s           | n         | t       | p    | f               | c            | n         | n          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | k                 | s          | g       |
-| p     | x         | y           | w         | t       | p    | f               | c            | n         | n          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | s          | u       |
-| p     | x         | s           | n         | t       | p    | f               | c            | n         | k          | e           | e          | s                        | s                        | w                      | w                      | p         | w          | o           | p         | n                 | s          | u       |
-
-only showing top 20 rows
-
-- ```python
-   total_records = df.count()
-   print(f"Total number of records: {total_records}")
-   class_distribution = df.groupBy('class').count()
-   print("Class distribution:")
-   class_distribution.show()
-  ```
-  Kode tersebut memiliki luaran:
-  ```python
-  Total number of records: 8124
-  Class distribution:
-   | class | count |
-   |-------|-------|
-   | e     | 4208  |
-   | p     | 3916  |
-
-  ```
-
-Output tersebut menunjukkan bahwa DataFrame memiliki total 8124 catatan, yang terbagi menjadi dua kelas: "e" (dengan 4208 catatan) dan "p" (dengan 3916 catatan). Ini mengindikasikan bahwa dataset memiliki distribusi kelas yang hampir seimbang, dengan sedikit lebih banyak catatan untuk kelas "e" dibandingkan dengan kelas "p".
-
-### Cek Missing Value 
-Salah satu tantangan utama dalam dataset ini adalah adanya atribut dengan nilai yang hilang, oleh karena itu perlu diadakan pengecekan data hilang.
-
-- ```python
-    for colname in df.columns:
-    null_count = df.filter(col(colname).isNull()).count()
-    print(f" {colname}: {null_count}")
-  ```
-  Kode tersebut memiliki luaran:
-  ```python
-    class: 0
-    cap-shape: 0
-    cap-surface: 0
-    cap-color: 0
-    bruises: 0
-    odor: 0
-    gill-attachment: 0
-    gill-spacing: 0
-    gill-size: 0
-    gill-color: 0
-    stalk-shape: 0
-    stalk-root: 0
-    stalk-surface-above-ring: 0
-    stalk-surface-below-ring: 0
-    stalk-color-above-ring: 0
-    stalk-color-below-ring: 0
-    veil-type: 0
-    veil-color: 0
-    ring-number: 0
-    ring-type: 0
-    spore-print-color: 0
-    population: 0
-    habitat: 0
-  ```
-
-Output tersebut menunjukkan bahwa tidak ada nilai yang hilang dalam dataset untuk setiap kolom, karena semua kolom memiliki jumlah nilai kosong (null) sama dengan 0. Ini berarti dataset sepenuhnya lengkap dan tidak memerlukan proses imputasi atau penanganan data hilang sebelum analisis lebih lanjut.
+Output tersebut menunjukkan bahwa tidak ada data duplikat dalam dataset, yang berarti setiap catatan atau baris dalam DataFrame adalah unik. Hal ini penting karena memastikan bahwa analisis yang dilakukan tidak akan terpengaruh oleh data yang berulang, yang dapat menyebabkan bias atau kesalahan interpretasi.
 
 ## Data Preparation
 Tahap Data Preparation bertujuan untuk memastikan bahwa data yang digunakan dalam pembuatan model klasifikasi memiliki kualitas yang baik dan siap untuk diolah. Data yang bersih, bebas dari inkonsistensi, dan disiapkan dengan baik merupakan prasyarat penting untuk mendapatkan hasil analisis yang akurat dan model pembelajaran mesin yang optimal. Berikut adalah langkah-langkah yang dilakukan dalam proses persiapan data pada proyek klasifikasi jamur ini:
