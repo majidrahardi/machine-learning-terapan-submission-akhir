@@ -1,15 +1,13 @@
 # Laporan Proyek Akhir Machine Learning Terapan - Majid Rahardi
 
 ## Domain Proyek
-Dalam beberapa tahun terakhir, anime telah berkembang menjadi bentuk hiburan global yang sangat populer, dengan jutaan penggemar di seluruh dunia. Seiring dengan meningkatnya jumlah judul anime yang tersedia di berbagai platform streaming seperti Crunchyroll, Netflix, dan Funimation, penggemar anime sering kali dihadapkan dengan pilihan yang sangat banyak. Hal ini membuat mereka kesulitan untuk menemukan anime yang sesuai dengan preferensi pribadi mereka. Di sinilah peran sistem rekomendasi menjadi sangat penting.
+Dalam beberapa tahun terakhir, anime telah berkembang menjadi bentuk hiburan global yang sangat populer, dengan jutaan penggemar di seluruh dunia. Seiring dengan meningkatnya jumlah judul anime yang tersedia di berbagai platform streaming seperti Crunchyroll, Netflix, dan Funimation, penggemar anime sering kali dihadapkan dengan pilihan yang sangat banyak. Hal ini membuat mereka kesulitan untuk menemukan anime yang sesuai dengan preferensi pribadi mereka. Di sinilah peran sistem rekomendasi menjadi sangat penting [[1](http://jurnal.utu.ac.id/JTI/article/download/7787/4290)].
 
-Sistem rekomendasi adalah alat yang menggunakan algoritma untuk membantu pengguna menemukan konten yang sesuai dengan minat atau preferensi mereka berdasarkan data yang ada. Dalam konteks anime, sistem rekomendasi bertujuan untuk menyarankan anime yang serupa dengan anime yang sudah ditonton atau yang dianggap disukai oleh pengguna, berdasarkan berbagai faktor seperti genre, tema, karakter, dan rating. Sistem ini berfungsi untuk meningkatkan pengalaman pengguna dengan menyederhanakan proses pencarian konten yang relevan dan memperkenalkan mereka pada judul anime baru yang mungkin belum mereka temui sebelumnya.
+Sistem rekomendasi adalah alat yang menggunakan algoritma untuk membantu pengguna menemukan konten yang sesuai dengan minat atau preferensi mereka berdasarkan data yang ada. Dalam konteks anime, sistem rekomendasi bertujuan untuk menyarankan anime yang serupa dengan anime yang sudah ditonton atau yang dianggap disukai oleh pengguna, berdasarkan berbagai faktor seperti genre, tema, karakter, dan rating. Sistem ini berfungsi untuk meningkatkan pengalaman pengguna dengan menyederhanakan proses pencarian konten yang relevan dan memperkenalkan mereka pada judul anime baru yang mungkin belum mereka temui sebelumnya [[2](http://repository.uin-malang.ac.id/18842/1/18842.pdf)].
 
-Salah satu teknik yang sering digunakan dalam sistem rekomendasi adalah Content-Based Filtering. Dalam pendekatan ini, algoritma menganalisis konten yang ada dalam database, seperti genre, deskripsi, atau karakteristik lain dari anime, dan membandingkannya dengan anime yang telah ditonton atau disukai oleh pengguna. Salah satu metode untuk mengukur kesamaan konten adalah TF-IDF (Term Frequency - Inverse Document Frequency), yang membantu mengukur seberapa penting suatu kata dalam dokumen (dalam hal ini, genre atau deskripsi anime). Selain itu, Cosine Similarity digunakan untuk menghitung seberapa mirip dua anime berdasarkan vektor TF-IDF mereka, yang memungkinkan sistem untuk memberikan rekomendasi yang relevan.
+Salah satu teknik yang sering digunakan dalam sistem rekomendasi adalah Content-Based Filtering. Dalam pendekatan ini, algoritma menganalisis konten yang ada dalam database, seperti genre, deskripsi, atau karakteristik lain dari anime, dan membandingkannya dengan anime yang telah ditonton atau disukai oleh pengguna. Salah satu metode untuk mengukur kesamaan konten adalah TF-IDF (Term Frequency - Inverse Document Frequency), yang membantu mengukur seberapa penting suatu kata dalam dokumen (dalam hal ini, genre atau deskripsi anime). Selain itu, Cosine Similarity digunakan untuk menghitung seberapa mirip dua anime berdasarkan vektor TF-IDF mereka, yang memungkinkan sistem untuk memberikan rekomendasi yang relevan [[3](http://repository.uin-malang.ac.id/17878/2/17878.pdf)].
 
 Secara keseluruhan, tujuan dari sistem rekomendasi anime adalah untuk memberikan pengalaman yang lebih personal dan efisien bagi pengguna dalam menemukan anime yang sesuai dengan selera mereka, yang pada akhirnya dapat meningkatkan kepuasan dan keterlibatan mereka dengan platform streaming anime.
-
-[[7](https://jurnal.iaii.or.id/index.php/RESTI/article/view/5498)].
 
 ## Business Understanding
 Dalam industri hiburan digital, terutama pada platform streaming anime, pemirsa menghadapi tantangan besar untuk menemukan konten yang relevan di tengah banyaknya pilihan yang tersedia. Platform-platform besar seperti Crunchyroll, Netflix, dan Funimation memiliki ribuan judul anime yang terus berkembang setiap tahun. Namun, dengan semakin banyaknya pilihan yang ada, pengguna sering kali merasa kesulitan untuk menemukan anime yang sesuai dengan minat pribadi mereka. Masalah utama yang muncul adalah kesenjangan antara preferensi pengguna dengan informasi yang tersedia tentang konten anime, yang membuat proses pencarian menjadi memakan waktu dan kurang efisien.
@@ -183,22 +181,11 @@ Rekomendasi ini menunjukkan bahwa anime yang memiliki genre yang mirip dengan Fu
 ### Evaluasi Presisi
 Perhitungan Presisi: Misalkan kita menetapkan threshold bahwa rekomendasi dengan Cosine Similarity > 0.8 dianggap relevan. Dari 5 rekomendasi, semuanya memiliki nilai Cosine Similarity di atas 0.8, yang berarti semuanya relevan. Dengan demikian, presisi untuk sistem rekomendasi ini adalah: Presisi = Jumlah rekomendasi relevan / Jumlah total rekomendasi = 5/5 = 1.0
 
-Artinya, 100% dari rekomendasi yang diberikan relevan menurut threshold yang kita tentukan.
-
-
+Artinya, 100% dari rekomendasi yang diberikan relevan menurut threshold yang kita tentukan. Dengan demikian diharapkan dapat mencapai tujuan utama studi dilakukan yaitu Meningkatkan Pengalaman Pengguna.
 
 ## Referensi
-[1] O. Tarawneh, M. Tarawneh, Y. Sharrab, and M. Husni, "Mushroom classification using machine-learning techniques," in AIP Conference Proceedings, vol. 2979, no. 1, Oct. 2023.
+[1] A. Sitanggang, "Sistem Rekomendasi Anime Menggunakan Metode Singular Value Decomposition (SVD) dan Cosine Similarity". Jurnal Teknologi Informasi. 2023 Nov 24;2(2):90-4.
 
-[2] Y. Wang, J. Du, H. Zhang, and X. Yang, "Mushroom toxicity recognition based on multigrained cascade forest," Scientific Programming, vol. 2020, no. 1, pp. 1-10, 2020.
+[2] N.M. Roziqiin, M. Faisal "Sistem rekomendasi pemilihan anime menggunakan user-based collaborative filtering". JIPI (Jurnal Ilmiah Penelitian dan Pembelajaran Informatika). 2024 Feb 23;9(1):299-306.
 
-[3] Kaggle Mushroom Classification Dataset Documentation, [Online]. Available: https://www.kaggle.com/uciml/mushroom-classification. Accessed: Nov. 3, 2024.
-
-[4] H. Ujir, I. Hipiny, M. H. Bolhassan, K. N. Fazira Ku Azir, and S. A. Ali, "Automating Mushroom Culture Classification: A Machine Learning Approach," International Journal of Advanced Computer Science & Applications, vol. 15, no. 4, 2024.
-
-[5] X. Guo, "Research on Mushroom Image Classification Algorithm Based on Deep Sparse Dictionary Learning," Academic Journal of Science and Technology, vol. 9, no. 1, pp. 235-240, 2024.
-
-[6] R. Sahu, S. Pandey, R. Verma, and P. Pandey, "Ensemble Learning based Classification of Edible and Poisonous Agaricus Mushrooms," in 2024 Fourth International Conference on Advances in Electrical, Computing, Communication and Sustainable Technologies (ICAECT), Jan. 2024, pp. 1-7.
-
-[7] L. Farokhah and S. Y. Riska, "Analysis and Development of Eight Deep Learning Architectures for the Classification of Mushrooms," Jurnal RESTI (Rekayasa Sistem dan Teknologi Informasi), vol. 8, no. 1, pp. 142-149, 2024.
-
+[3] Putri HD, Faisal M. "Analyzing the effectiveness of collaborative filtering and content-based filtering methods in anime recommendation systems". Jurnal Komtika (Komputasi dan Informatika). 2023;7(2):124-33.
