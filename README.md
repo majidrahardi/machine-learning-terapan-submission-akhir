@@ -98,133 +98,29 @@ Output dari perintah `df.isnull().sum()` menunjukkan jumlah nilai yang hilang (n
 Output tersebut menunjukkan bahwa tidak ada data duplikat dalam dataset, yang berarti setiap catatan atau baris dalam DataFrame adalah unik. Hal ini penting karena memastikan bahwa analisis yang dilakukan tidak akan terpengaruh oleh data yang berulang, yang dapat menyebabkan bias atau kesalahan interpretasi.
 
 ## Data Preparation
-Tahap Data Preparation bertujuan untuk memastikan bahwa data yang digunakan dalam pembuatan model klasifikasi memiliki kualitas yang baik dan siap untuk diolah. Data yang bersih, bebas dari inkonsistensi, dan disiapkan dengan baik merupakan prasyarat penting untuk mendapatkan hasil analisis yang akurat dan model pembelajaran mesin yang optimal. Berikut adalah langkah-langkah yang dilakukan dalam proses persiapan data pada proyek klasifikasi jamur ini:
+Pada tahap **Data Preparation**, dataset yang telah diunduh dan dimuat akan diproses agar siap digunakan untuk analisis lebih lanjut atau pembangunan model sistem rekomendasi. Proses ini melibatkan serangkaian langkah untuk memastikan bahwa data yang digunakan bersih, konsisten, dan dalam format yang dapat diproses dengan baik oleh model machine learning. Beberapa langkah utama yang dilakukan pada tahap ini antara lain:
 
-### Transformasi dan Encoding Data Kategorikal
-Sebagian besar atribut dalam dataset adalah kategori, dengan nilai-nilai berbentuk simbol atau huruf. Agar data ini dapat digunakan dalam model pembelajaran mesin, diperlukan proses encoding untuk mengubah data kategorikal menjadi bentuk numerik. 
+### Mengatasi Missing Value
+Pada tahap *Mengatasi Missing Value*, kita menangani nilai yang hilang dalam dataset yang dapat mempengaruhi kualitas analisis dan model rekomendasi. Salah satu pendekatan yang umum digunakan adalah dengan menghapus baris yang memiliki missing values, seperti yang dilakukan dengan fungsi `dropna()`, yang dapat mengurangi dampak dari data yang hilang. 
 
 - ```python
-	string_columns = [col_name for col_name, col_type in df.dtypes if col_type == 'string']
-	indexers = [StringIndexer(inputCol=col_name, outputCol=col_name+"_index", handleInvalid="skip").fit(df) for col_name in string_columns]
-	pipeline = Pipeline(stages=indexers)
-	df_encoded = pipeline.fit(df).transform(df)
-	df_encoded.select([col_name+"_index" for col_name in string_columns]).show()
+	#Cleaning missing value with function dropna()
+	df_clean = df.dropna()
+	df_clean
+  ```
+  Kode tersebut memiliki luaran:
+
+![DataClean](https://github.com/user-attachments/assets/82bcad6e-23fd-400c-b3f5-8658841145cd)
+
+  
+- ```python
+	df_clean.isnull().sum()
   ```
   Kode tersebut memiliki luaran:
   
-  | class_index | cap-shape_index | cap-surface_index | cap-color_index | bruises_index | odor_index | gill-attachment_index | gill-spacing_index | gill-size_index | gill-color_index | stalk-shape_index | stalk-root_index | stalk-surface-above-ring_index | stalk-surface-below-ring_index | stalk-color-above-ring_index | stalk-color-below-ring_index | veil-type_index | veil-color_index | ring-number_index | ring-type_index | spore-print-color_index | population_index | habitat_index |
-   |-------------|-----------------|-------------------|-----------------|---------------|------------|-----------------------|--------------------|-----------------|------------------|-------------------|------------------|------------------------------|------------------------------|----------------------------|----------------------------|-----------------|------------------|-------------------|-----------------|-------------------------|------------------|---------------|
-   | 1.0         | 0.0             | 1.0               | 0.0             | 1.0           | 6.0        | 0.0                   | 0.0                | 1.0             | 7.0              | 1.0               | 2.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 2.0              | 4.0           |
-   | 0.0         | 0.0             | 1.0               | 3.0             | 1.0           | 4.0        | 0.0                   | 0.0                | 0.0             | 7.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 1.0                     | 3.0              | 1.0           |
-   | 0.0         | 3.0             | 1.0               | 4.0             | 1.0           | 5.0        | 0.0                   | 0.0                | 0.0             | 3.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 1.0                     | 3.0              | 5.0           |
-   | 1.0         | 0.0             | 0.0               | 4.0             | 1.0           | 6.0        | 0.0                   | 0.0                | 1.0             | 3.0              | 1.0               | 2.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 2.0              | 4.0           |
-   | 0.0         | 0.0             | 1.0               | 1.0             | 0.0           | 0.0        | 0.0                   | 1.0                | 0.0             | 7.0              | 0.0               | 2.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 1.0             | 1.0                     | 4.0              | 1.0           |
-   | 0.0         | 0.0             | 0.0               | 3.0             | 1.0           | 4.0        | 0.0                   | 0.0                | 0.0             | 3.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 3.0              | 1.0           |
-   | 0.0         | 3.0             | 1.0               | 4.0             | 1.0           | 4.0        | 0.0                   | 0.0                | 0.0             | 4.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 3.0              | 5.0           |
-   | 0.0         | 3.0             | 0.0               | 4.0             | 1.0           | 5.0        | 0.0                   | 0.0                | 0.0             | 3.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 1.0                     | 2.0              | 5.0           |
-   | 1.0         | 0.0             | 0.0               | 4.0             | 1.0           | 6.0        | 0.0                   | 0.0                | 1.0             | 1.0              | 1.0               | 2.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 0.0              | 1.0           |
-   | 0.0         | 3.0             | 1.0               | 3.0             | 1.0           | 4.0        | 0.0                   | 0.0                | 0.0             | 4.0              | 1.0               | 3.0              | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0             | 2.0                     | 2.0              | 5.0           |
+![CekDataClean](https://github.com/user-attachments/assets/77847e7e-d53a-4469-97de-0122674cc6ee)
 
-only showing top 20 rows
-
-Output tersebut menunjukkan bahwa data awal telah dikodekan atau diubah menjadi indeks numerik, di mana setiap kolom atribut, seperti "class," "cap-shape," dan "odor," kini direpresentasikan dengan nilai numerik (misalnya, 0.0, 1.0, dll.) untuk memfasilitasi analisis dan pemrosesan lebih lanjut, seperti pelatihan model machine learning. Setiap nilai indeks tersebut mengacu pada kategori unik dari atribut yang sesuai, dan hanya 20 baris pertama dari data yang dikodekan yang ditampilkan sebagai sampel.
-
-- ```python
-	numeric_features = [t[0] for t in df.dtypes if t[1] in ['int','double']]
-	numeric_summary = df.select(numeric_features).summary()
-	numeric_summary.show(truncate=False)
-  ```
-  Kode tersebut memiliki luaran:
-
-| summary | class_index | cap-shape_index | cap-surface_index | cap-color_index | bruises_index | odor_index | gill-attachment_index | gill-spacing_index | gill-size_index | gill-color_index | stalk-shape_index | stalk-root_index | stalk-surface-above-ring_index | stalk-surface-below-ring_index | stalk-color-above-ring_index | stalk-color-below-ring_index | veil-type_index | veil-color_index | ring-number_index | ring-type_index | spore-print-color_index | population_index | habitat_index |
-|---------|-------------|-----------------|-------------------|-----------------|---------------|------------|-----------------------|--------------------|-----------------|------------------|-------------------|------------------|------------------------------|------------------------------|----------------------------|----------------------------|-----------------|------------------|-------------------|------------------|-------------------------|------------------|---------------|
-| count  | 8124        | 8124            | 8124              | 8124            | 8124          | 8124       | 8124                  | 8124               | 8124            | 8124             | 8124              | 8124             | 8124                         | 8124                         | 8124                       | 8124                       | 8124            | 8124             | 8124              | 8124             | 8124                    | 8124             | 8124          |
-| mean   | 0.482       | 0.777           | 0.887             | 1.785            | 0.416          | 1.453       | 0.026                 | 0.161              | 0.309           | 2.703            | 0.433             | 0.881             | 0.437                        | 0.536                        | 0.978                      | 1.018                      | 0.0             | 0.038            | 0.083             | 0.696            | 1.495                   | 1.064             | 1.356          |
-| stddev | 0.500       | 0.876           | 0.821             | 1.650            | 0.493          | 1.916       | 0.159                 | 0.368              | 0.462           | 2.401            | 0.495             | 1.037             | 0.632                        | 0.779                        | 1.483                      | 1.523                      | 0.0             | 0.258            | 0.291             | 0.787            | 1.381                   | 1.392             | 1.544          |
-| min    | 0.0         | 0.0             | 0.0               | 0.0              | 0.0            | 0.0         | 0.0                   | 0.0                | 0.0             | 0.0               | 0.0               | 0.0               | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0              | 0.0                     | 0.0              | 0.0           |
-| 25%    | 0.0         | 0.0             | 0.0               | 0.0              | 0.0            | 0.0         | 0.0                   | 0.0                | 0.0             | 1.0               | 0.0               | 0.0               | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 0.0              | 0.0                     | 0.0              | 0.0           |
-| 50%    | 0.0         | 1.0             | 1.0               | 1.0              | 0.0            | 1.0         | 0.0                   | 0.0                | 0.0             | 2.0               | 0.0               | 1.0               | 0.0                          | 0.0                          | 0.0                        | 0.0                        | 0.0             | 0.0              | 0.0               | 1.0              | 1.0                     | 1.0              | 1.0           |
-| 75%    | 1.0         | 1.0             | 2.0               | 3.0              | 1.0            | 2.0         | 0.0                   | 0.0                | 1.0             | 4.0               | 1.0               | 1.0               | 1.0                          | 1.0                          | 1.0                        | 1.0                        | 0.0             | 0.0              | 0.0               | 1.0              | 2.0                     | 2.0              | 2.0           |
-| max    | 1.0         | 5.0             | 3.0               | 9.0              | 1.0            | 8.0         | 1.0                   | 1.0                | 1.0             | 11.0              | 1.0               | 4.0               | 3.0                          | 3.0                          | 8.0                        | 8.0                        | 0.0             | 3.0              | 2.0               | 4.0              | 8.0                     | 5.0              | 6.0           |
-
-
-Output tersebut memberikan ringkasan statistik dari kolom-kolom terkode dalam dataset, termasuk jumlah data (count), rata-rata (mean), standar deviasi (stddev), nilai minimum (min), kuartil pertama (25%), median (50%), kuartil ketiga (75%), dan nilai maksimum (max) untuk setiap kolom yang bertipe data numerik. Ini membantu memahami distribusi dan rentang nilai dari atribut terkode, yang mencakup informasi seperti "class_index" hingga "habitat_index," di mana nilai-nilai ini mewakili kategori yang telah diubah menjadi bentuk numerik untuk keperluan analisis dan model machine learning.
-
-### Pemeriksaan Ketidakseimbangan Kelas
-Mengingat bahwa target prediksi adalah label klasifikasi jamur (dapat dimakan atau beracun), penting untuk memeriksa keseimbangan distribusi kelas target. Ketidakseimbangan kelas yang signifikan dapat mempengaruhi performa model. Jika ditemukan, langkah-langkah penanganan seperti:
-- **Synthetic Minority Oversampling Technique (SMOTE)**
-- ```python
-	class_counts_after = df_resampled.groupBy("class_index").count()
-	print("Class counts after SMOTE:")
-	class_counts_after.show()
-  ```
-  Kode tersebut memiliki luaran:
-
-**Class counts after SMOTE:**
-| class_index | count |
-|-------------|-------|
-| 0.0         | 4208  |
-| 1.0         | 4208  |
-
-Output tersebut menunjukkan hasil dari proses oversampling menggunakan SMOTE (Synthetic Minority Over-sampling Technique), di mana jumlah data untuk kedua kelas dalam kolom "class_index" kini seimbang, masing-masing memiliki 4208 catatan. Sebelumnya, kelas yang kurang terwakili telah ditingkatkan jumlahnya untuk mengatasi ketidakseimbangan kelas, sehingga dataset menjadi lebih seimbang dan dapat meningkatkan kinerja model machine learning dalam memprediksi kedua kelas secara adil.
-
-### Correlation Analysis After Encoding and SMOTE
-Analisis Korelasi adalah metode statistik yang digunakan untuk mengukur dan mengevaluasi hubungan antara dua variabel atau lebih. Tujuan utama dari analisis ini adalah untuk menentukan seberapa kuat hubungan tersebut dan apakah hubungan tersebut bersifat positif, negatif, atau netral.
-- ```python
-	#Menampilkan heatmap menggunakan Seaborn dan Matplotlib
-	plt.figure(figsize=(12, 8))
-	sns.heatmap(correlation_df, annot=True, cmap="coolwarm", fmt=".2f", linewidths=.5)
-	plt.title("Correlation Matrix Heatmap (Numeric Columns Only)")
-	plt.show()
-  ```
-  Kode tersebut memiliki luaran:
-  ![CorrelationAnalysis](https://github.com/user-attachments/assets/006b7361-5a54-4953-8541-e80b90179eef)
-
-Gambar tersebut menunjukkan heatmap dari matriks korelasi yang merepresentasikan hubungan antara kolom-kolom numerik dalam dataset. Warna dalam heatmap berkisar dari -1 (biru tua) hingga +1 (merah tua), di mana angka yang lebih tinggi atau lebih dekat dengan +1 menunjukkan korelasi positif yang kuat, angka yang lebih rendah atau mendekati -1 menunjukkan korelasi negatif yang kuat, dan angka mendekati 0 menunjukkan korelasi yang lemah atau tidak ada korelasi. Diagonal utama semuanya merah tua dengan nilai +1 karena setiap variabel memiliki korelasi sempurna dengan dirinya sendiri. Ada beberapa korelasi signifikan yang dapat diamati, seperti hubungan kuat antara "ring-type_index" dan "ring-number_index," yang menunjukkan bahwa ada pola atau ketergantungan di antara atribut-atribut ini.
-
-
-### Fitur Selection (Pearson Correlation)
-- ```python
-	# Menentukan ambang korelasi yang dianggap relevan
-	threshold = 0.1
-	# Memfilter fitur-fitur yang memiliki korelasi lebih besar dari ambang dengan class_index
-	relevant_features = [col_name for col_name in correlation_df.index
-                     if abs(correlation_df.loc[col_name, 'class_index']) > threshold
-                     and col_name != "class_index"]
-
-	# Menampilkan 5 fitur teratas yang dianggap relevan
-	print("5 Fitur Teratas yang Dianggap Relevan terhadap class_index:")
-	for feature in relevant_features[:5]:
-   	 print(feature)
-  	```
-  Kode tersebut memiliki luaran:
-  ```python
- 	5 Fitur Teratas yang Dianggap Relevan terhadap class_index:
-	cap-surface_index
-	bruises_index
-	odor_index
-	gill-attachment_index
-	gill-spacing_index
-  ```
-Output tersebut menunjukkan lima fitur teratas yang paling relevan terhadap "class_index," yaitu "cap-surface_index," "bruises_index," "odor_index," "gill-attachment_index," dan "gill-spacing_index." Ini berarti bahwa fitur-fitur ini memiliki hubungan yang lebih signifikan dengan variabel target "class_index" dibandingkan dengan fitur lainnya, yang dapat mempengaruhi prediksi atau klasifikasi dalam model machine learning. Relevansi ini dapat diukur melalui korelasi atau metode pemilihan fitur lainnya, dan fitur-fitur yang dipilih diharapkan memberikan kontribusi besar dalam meningkatkan kinerja model.
-
-### Pemisahan Data
-Data yang sudah bersih dan siap digunakan kemudian dibagi menjadi data latih (training set) dan data uji (testing set). Pembagian ini dilakukan untuk memastikan bahwa model dapat dievaluasi secara objektif, dengan mengukur kinerjanya pada data yang belum pernah dilihat sebelumnya.
-- ```python
-	# Membagi data menjadi train (50%), test (25%), dan validation (25%)
-	train, temp = df_split.randomSplit([0.5, 0.5], seed=42)
-	test, validation = temp.randomSplit([0.5, 0.5], seed=42)
-	print("Training Dataset Count: " + str(train.count()))
-	print("Test Dataset Count: " + str(test.count()))
-	print("Validation Dataset Count: " + str(validation.count()))
-  ```
-  Kode tersebut memiliki luaran:
-  ```python
- 	Training Dataset Count: 4115
-	Test Dataset Count: 2044
-	Validation Dataset Count: 1965
-  ```
-Output tersebut menunjukkan bahwa dataset telah dibagi menjadi tiga subset: training, test, dan validation, menggunakan metode randomSplit dengan rasio 50:50 untuk pembagian awal, diikuti oleh pembagian 50:50 dari subset sementara untuk menghasilkan set test dan validation. Hasilnya, dataset training memiliki 4115 catatan, dataset test memiliki 2044 catatan, dan dataset validation memiliki 1965 catatan. Pembagian ini dilakukan untuk melatih model pada data training, menguji kinerjanya pada data test, dan memvalidasi atau menyetel model lebih lanjut menggunakan data validation.
+Output di atas menunjukkan hasil dari proses pembersihan data dengan menggunakan fungsi dropna() untuk menghapus baris yang memiliki nilai kosong (missing values). Dataset yang dihasilkan, df_clean, kini berisi hanya baris-baris lengkap, tanpa adanya nilai yang hilang pada kolom manapun. Ini dapat membantu dalam analisis dan pemodelan yang memerlukan data yang bersih dan konsisten. Namun, proses ini juga mengakibatkan penghapusan beberapa baris, terutama yang memiliki nilai kosong pada kolom seperti genre, type, dan rating, yang dapat menyebabkan hilangnya informasi penting terkait beberapa anime. Meskipun demikian, dataset yang telah dibersihkan ini lebih mudah dikelola dan digunakan dalam model pembelajaran mesin atau analisis lanjutan, meski harus diingat bahwa penggunaan dropna() mengorbankan data yang tidak lengkap.
 
 ## Modeling
 
