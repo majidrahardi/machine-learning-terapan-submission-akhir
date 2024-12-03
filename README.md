@@ -122,204 +122,70 @@ Pada tahap *Mengatasi Missing Value*, kita menangani nilai yang hilang dalam dat
 
 Output di atas menunjukkan hasil dari proses pembersihan data dengan menggunakan fungsi dropna() untuk menghapus baris yang memiliki nilai kosong (missing values). Dataset yang dihasilkan, df_clean, kini berisi hanya baris-baris lengkap, tanpa adanya nilai yang hilang pada kolom manapun. Ini dapat membantu dalam analisis dan pemodelan yang memerlukan data yang bersih dan konsisten. Namun, proses ini juga mengakibatkan penghapusan beberapa baris, terutama yang memiliki nilai kosong pada kolom seperti genre, type, dan rating, yang dapat menyebabkan hilangnya informasi penting terkait beberapa anime. Meskipun demikian, dataset yang telah dibersihkan ini lebih mudah dikelola dan digunakan dalam model pembelajaran mesin atau analisis lanjutan, meski harus diingat bahwa penggunaan dropna() mengorbankan data yang tidak lengkap.
 
-## Modeling
+## Model Development dengan Content Based Filtering
+### TF-IDF Vectorizer
 
 - ```python
-	# Inisialisasi model
-	rf = RandomForestClassifier(featuresCol='features', labelCol='class_index')
-	lr = LogisticRegression(featuresCol='features', labelCol='class_index')
-	dt = DecisionTreeClassifier(featuresCol='features', labelCol='class_index')
-	nb = NaiveBayes(featuresCol='features', labelCol='class_index')
-	
-	# Fit model pada data latih
-	rf_model = rf.fit(train)
-	lr_model = lr.fit(train)
-	dt_model = dt.fit(train)
-	nb_model = nb.fit(train)
-	
-	# Transformasi data uji dan validasi dengan model yang sudah dilatih
-	rf_test_predictions = rf_model.transform(test)
-	lr_test_predictions = lr_model.transform(test)
-	dt_test_predictions = dt_model.transform(test)
-	nb_test_predictions = nb_model.transform(test)
-	
-	rf_validation_predictions = rf_model.transform(validation)
-	lr_validation_predictions = lr_model.transform(validation)
-	dt_validation_predictions = dt_model.transform(validation)
-	nb_validation_predictions = nb_model.transform(validation)
+	print(tfidf_name_df.head()
   ```
-Kode tersebut menginisialisasi empat model klasifikasi dari pustaka PySpark ML, yaitu RandomForestClassifier, LogisticRegression, DecisionTreeClassifier, dan NaiveBayes. 
-Keempat model yang digunakan dalam proyek ini memiliki cara kerja yang berbeda. Semua model yang digunakan di sini menggunakan nilai parameter default yang telah ditentukan oleh pustaka yang digunakan yaitu pustaka PySpark ML.
+Kode tersebut memiliki luaran:
 
-### Random Forest:
-Random Forest adalah algoritma ensemble yang menggabungkan banyak pohon keputusan untuk meningkatkan ketepatan prediksi dan mengurangi overfitting. Setiap pohon dalam hutan dibangun menggunakan subset acak dari data pelatihan dan subset acak dari fitur, sehingga meningkatkan variasi antar pohon dan membuat model lebih robust. Dengan parameter default seperti `n_estimators=100` dan `criterion='gini'`, Random Forest sangat efektif dalam menangani data besar dengan fitur yang banyak, serta memberikan hasil yang stabil meski sering kali lebih lambat dalam pelatihan dibandingkan model pohon tunggal.
+![TFIDF2](https://github.com/user-attachments/assets/fa34bb2d-7484-49b1-8078-65dbef0c04e0)
 
-#### Kelebihan Random Forest:
-1. **Akurasi Tinggi** – Lebih akurat dibanding model tunggal.
-2. **Tahan Overfitting** – Menggabungkan banyak pohon mengurangi overfitting.
-3. **Resisten terhadap Noise** – Tidak mudah terpengaruh data yang salah atau acak.
-4. **Menangani Banyak Fitur** – Efektif untuk dataset dengan fitur banyak.
-5. **Estimasi Fitur Penting** – Bisa menilai pentingnya setiap fitur.
 
-#### Kekurangan Random Forest:
-1. **Kompleksitas Tinggi** – Butuh banyak komputasi dan memori.
-2. **Interpretasi Sulit** – Hasilnya tidak mudah dipahami seperti pohon keputusan tunggal.
-3. **Lambat untuk Prediksi Real-Time** – Kurang ideal untuk prediksi instan.
-4. **Kurang Optimal untuk Data Waktu** – Tidak cocok untuk data berurutan atau time series.
+Penjelasan Penggunaan **TfidfVectorizer**
 
-### Logistic Regression:
-Logistic Regression adalah algoritma klasifikasi yang digunakan untuk memodelkan probabilitas suatu kelas berdasarkan kombinasi linier dari fitur yang ada. Meskipun bernama "regresi", model ini lebih sering digunakan untuk klasifikasi, dengan menggunakan fungsi sigmoid untuk mengubah log-odds menjadi probabilitas antara 0 dan 1. Dengan parameter default seperti `solver='lbfgs'` dan `max_iter=100`, Logistic Regression efisien dalam menangani masalah klasifikasi biner dan dapat diperbaiki dengan regularisasi untuk meningkatkan performa pada data yang kompleks.
+**`TfidfVectorizer(stop_words='english', max_features=100)`**:
 
-#### Kelebihan Logistic Regression:
-1. **Sederhana dan Mudah Diinterpretasi** – Modelnya sederhana dan mudah dipahami, sehingga memudahkan interpretasi hasil.
-2. **Efisien untuk Dataset Kecil** – Logistic Regression bekerja baik dengan dataset yang lebih kecil dan memiliki fitur yang relevan.
-3. **Cepat dan Ringan** – Proses training dan prediksi cepat, serta membutuhkan sumber daya komputasi yang lebih sedikit dibandingkan model kompleks.
-4. **Probabilitas Output** – Menghasilkan nilai probabilitas, sehingga cocok untuk klasifikasi dengan pengukuran kepercayaan.
+- **`stop_words='english'`**: Mengabaikan kata-kata umum dalam bahasa Inggris (misalnya "the", "and", "is") yang tidak memberi informasi penting.
+- **`max_features=100`**: Mengambil hanya 100 fitur (kata) teratas berdasarkan nilai TF-IDF tertinggi.
 
-#### Kekurangan Logistic Regression:
-1. **Tidak Efektif untuk Hubungan Non-Linear** – Logistic Regression hanya bisa menangani data yang memiliki hubungan linier; kurang efektif untuk hubungan non-linier.
-2. **Rentan terhadap Outlier** – Outlier pada data dapat memengaruhi kinerja model, terutama tanpa normalisasi atau penanganan khusus.
-3. **Tidak Ideal untuk Data yang Sangat Kompleks** – Kurang akurat pada data yang kompleks atau yang memiliki banyak fitur interaksi.
-4. **Mengasumsikan Indepedensi Fitur** – Logistic Regression bekerja optimal jika fitur tidak saling bergantung, asumsi ini sering kali tidak realistis dalam data nyata.
+---
 
-### Decision Tree:
-Decision Tree adalah algoritma klasifikasi yang membangun pohon keputusan dengan membagi data berdasarkan fitur-fitur yang paling informatif, diukur dengan kriteria seperti Gini Impurity atau Entropy. Proses ini berlanjut hingga data tidak dapat dibagi lebih lanjut atau mencapai kriteria berhenti yang ditentukan. Dengan menggunakan parameter default seperti `criterion='gini'`, `max_depth=None`, dan `min_samples_split=2`, Decision Tree mampu menangani data yang kompleks, meskipun cenderung mudah overfitting jika tidak diatur dengan baik.
+Fungsi Penting dalam Proses TF-IDF:
 
-#### Kelebihan Decision Tree:
-1. **Mudah Diinterpretasi** – Struktur pohon membuat model ini mudah dipahami, visualisasi langsung menunjukkan jalur keputusan.
-2. **Menangani Data Non-Linear** – Decision Tree dapat menangani data yang memiliki hubungan non-linier, cocok untuk berbagai jenis data.
-3. **Tidak Perlu Banyak Pra-pemrosesan** – Model ini tidak memerlukan normalisasi atau penskalaan fitur.
-4. **Bisa Menangani Fitur Kategorikal dan Numerik** – Decision Tree fleksibel dalam menangani tipe data yang berbeda dalam satu model.
+1. **`fit_transform()`**: Melakukan dua langkah:
+   - **`fit()`**: Mempelajari vocabulari (kamus kata) yang ada di dalam kolom teks.
+   - **`transform()`**: Mengubah teks ke dalam bentuk vektor berdasarkan fitur yang sudah dipelajari.
 
-#### Kekurangan Decision Tree:
-1. **Rentan terhadap Overfitting** – Decision Tree cenderung mempelajari data secara detail hingga berlebihan, terutama tanpa pemangkasan (*pruning*).
-2. **Sensitif terhadap Variasi Data** – Sedikit perubahan pada data dapat menyebabkan perubahan besar dalam struktur pohon.
-3. **Kurang Optimal pada Dataset Besar** – Pohon yang sangat dalam bisa menjadi lambat dan memori intensif pada dataset besar.
-4. **Cenderung Bias pada Fitur yang Dominan** – Decision Tree cenderung lebih terfokus pada fitur yang memiliki banyak kategori atau nilai tinggi.
+2. **`toarray()`**: Mengubah hasil yang awalnya berupa matriks sparse ke dalam array dua dimensi yang lebih mudah dibaca dan digunakan.
 
-### Naive Bayes:
-Naive Bayes adalah model klasifikasi berbasis probabilistik yang mengasumsikan independensi antar fitur untuk menghitung probabilitas suatu kelas berdasarkan data yang ada. Menggunakan Teorema Bayes, model ini menghitung probabilitas kelas yang diberikan fitur dan memilih kelas dengan probabilitas tertinggi. Meskipun seringkali tidak realistis untuk mengasumsikan bahwa fitur-fitur saling independen, Naive Bayes sering kali memberikan hasil yang sangat baik, terutama pada masalah klasifikasi teks, dengan nilai parameter default seperti `var_smoothing=1e-9` untuk mencegah pembagian dengan nol.
+3. **`get_feature_names_out()`**: Mengambil nama-nama fitur (kata-kata) yang digunakan dalam vektor TF-IDF.
 
-#### Kelebihan Naive Bayes:
-1. **Cepat dan Efisien** – Naive Bayes memiliki waktu training yang cepat, bahkan pada dataset yang besar.
-2. **Sederhana dan Mudah Diimplementasikan** – Model ini sangat mudah diimplementasikan dan interpretasinya sederhana.
-3. **Performa Baik pada Data Kecil** – Naive Bayes bekerja baik pada dataset yang kecil dan terstruktur dengan baik.
-4. **Bekerja Baik pada Data Kategorikal** – Sangat cocok untuk data kategorikal, seperti klasifikasi teks (misalnya, klasifikasi email sebagai spam atau bukan).
+---
 
-#### Kekurangan Naive Bayes:
-1. **Mengasumsikan Indepedensi Fitur** – Asumsi bahwa setiap fitur bersifat independen tidak selalu realistis, terutama pada data nyata.
-2. **Sensitif terhadap Data Tidak Relevan** – Naive Bayes bisa terpengaruh oleh fitur yang kurang relevan, sehingga perlu pemilihan fitur yang cermat.
-3. **Rentan terhadap Data Tak Terlihat** – Kinerja bisa turun jika terdapat data atau kombinasi kategori yang belum pernah terlihat selama pelatihan.
-4. **Tidak Cocok untuk Data dengan Interaksi Fitur yang Kuat** – Kurang efektif jika fitur memiliki korelasi tinggi, karena asumsi independensi tidak terpenuhi.
+TF-IDF memberikan wawasan tentang seberapa penting genre tertentu dalam konteks anime tertentu. Genre dengan nilai yang lebih tinggi dianggap lebih relevan atau lebih penting dalam anime tersebut. Anime dengan genre yang dominan seperti Kimi no Na wa. (dengan genre supernatural) atau Fullmetal Alchemist: Brotherhood (dengan genre action dan adventure) menunjukkan bahwa nilai TF-IDF mencerminkan pentingnya genre-genre tersebut dalam anime tersebut, dibandingkan dengan anime lainnya dalam dataset.
+
+### Cosine Similarity
+- ```python
+	print(cosine_sim_df.head())
+  ```
+Kode tersebut memiliki luaran:
+
+![CosineSimilarity](https://github.com/user-attachments/assets/94260d4a-eabc-46a7-b0ed-450d1ef1cd13)
+
+Cosine Similarity dalam konteks ini digunakan untuk membandingkan kemiripan antar anime berdasarkan genre mereka. Nilai mendekati 1.0 menunjukkan kemiripan yang tinggi, sedangkan nilai mendekati 0.0 menunjukkan perbedaan besar dalam genre. Anime seperti Kimi no Na wa. dan Fullmetal Alchemist: Brotherhood memiliki sedikit kemiripan karena genre yang sangat berbeda, sementara anime dalam satu franchise atau dengan tema serupa (seperti Gintama° dan Gintama') memiliki nilai kemiripan yang sangat tinggi. Steins;Gate sangat berbeda dari anime lain dalam dataset ini, yang tercermin dalam nilai 0.0 dengan anime lain yang memiliki genre berbeda seperti Kimi no Na wa.
+
 
 ## Evaluation
-### Confusion Matrix
-
-Confusion Matrix adalah tabel yang digunakan untuk mengevaluasi kinerja model klasifikasi dengan menghitung jumlah prediksi yang benar dan salah dari setiap kelas. Tabel ini menunjukkan bagaimana model memprediksi setiap kelas dan membantu mengidentifikasi di mana kesalahan terjadi.
-
-### Komponen Confusion Matrix
-
-Confusion Matrix terdiri dari empat komponen utama:
-
-1. **True Positive (TP)**: Prediksi yang benar di mana model memprediksi positif dan hasil sebenarnya juga positif.
-2. **True Negative (TN)**: Prediksi yang benar di mana model memprediksi negatif dan hasil sebenarnya juga negatif.
-3. **False Positive (FP)**: Prediksi salah di mana model memprediksi positif, tetapi hasil sebenarnya adalah negatif (*Type I Error*).
-4. **False Negative (FN)**: Prediksi salah di mana model memprediksi negatif, tetapi hasil sebenarnya adalah positif (*Type II Error*).
-
-### Struktur Confusion Matrix:
-
-|                 | Prediksi Positif | Prediksi Negatif |
-|-----------------|------------------|------------------|
-| **Aktual Positif** | True Positive (TP)  | False Negative (FN) |
-| **Aktual Negatif** | False Positive (FP) | True Negative (TN)  |
-
-### Metrik dari Confusion Matrix
-
-Confusion Matrix memungkinkan kita menghitung berbagai metrik evaluasi penting, antara lain:
-
-- **Akurasi**: Proporsi prediksi yang benar dari seluruh prediksi. Akurasi = TP + TN / TP + TN + FP + FN
-
-- **Presisi**: Proporsi prediksi positif yang benar dari seluruh prediksi positif. Presisi = TP / TP + FP
-
-- **Recall (Sensitivitas)**: Proporsi kasus positif yang teridentifikasi dengan benar oleh model. Recall = TP / TP + FN
-  
-- **F1-Score**: Rata-rata harmonis dari presisi dan recall, mengukur keseimbangan antara keduanya. F1-Score = 2 (Presisi x Recall) / Presisi + Recall
-
-### Hasil Confusion Matrix
-
-- Confusion Matrix Random Forest
-  
-![Confusion Matrix Random Forest](https://github.com/user-attachments/assets/4887a649-59b6-4080-81e1-0229f1665152)
-
-
-- Confusion Matrix Logistic Regression
-  
-![Confusion Matrix Logistic Regression](https://github.com/user-attachments/assets/a524b311-af1b-4a49-8407-d62f2894012d)
-
-  
-- Confusion Matrix Decision Tree
-  
-![Confusion Matrix Decision Tree](https://github.com/user-attachments/assets/f50d58bb-19cb-487d-b326-ce415c09e928)
-
-  
-- Confusion Matrix Naive Bayes
-  
-![Confusion Matrix Naive Bayes](https://github.com/user-attachments/assets/038cda72-d1cd-485b-8427-1fdf662f193c)
-
-
-### Kesimpulan
 - ```python
-	print_metrics('Random Forest', rf_val_metrics, 'Validation')
-	print_metrics('Logistic Regression', lr_val_metrics, 'Validation')
-	print_metrics('Decision Tree', dt_val_metrics, 'Validation')
-	print_metrics('Naive Bayes', nb_val_metrics, 'Validation')
-	print_metrics('Random Forest', rf_test_metrics, 'Test')
-	print_metrics('Logistic Regression', lr_test_metrics, 'Test')
-	print_metrics('Decision Tree', dt_test_metrics, 'Test')
-	print_metrics('Naive Bayes', nb_test_metrics, 'Test')
+	anime_name = 'Fullmetal Alchemist: Brotherhood'
+	recommendations = get_recommendations(anime_name, cosine_sim_df, top_n=5)
+	print(f"Rekomendasi untuk anime '{anime_name}':")
+	print(recommendations)
   ```
-  Kode tersebut memiliki luaran:
-    ```python
-  	Random Forest (Test)
-	Accuracy: 98.87%
-	Precision: 98.90%
-	Recall: 98.87%
-	F1-Score: 98.87%
-	
-	Logistic Regression (Test)
-	Accuracy: 84.49%
-	Precision: 84.92%
-	Recall: 84.49%
-	F1-Score: 84.47%
-	
-	Decision Tree (Test)
-	Accuracy: 98.24%
-	Precision: 98.24%
-	Recall: 98.24%
-	F1-Score: 98.24%
-	
-	Naive Bayes (Test)
-	Accuracy: 75.54%
-	Precision: 75.59%
-	Recall: 75.54%
-	F1-Score: 75.49%
-  ```
+Kode tersebut memiliki luaran:
+  
+![HasilRekomendasi](https://github.com/user-attachments/assets/ea64417a-a081-405b-9560-f513b376d5ee)
 
-Berdasarkan hasil evaluasi model yang diterapkan pada dataset ini, Random Forest menunjukkan kinerja terbaik dengan akurasi, presisi, recall, dan F1-Score masing-masing mencapai 98.87%. Angka ini menunjukkan bahwa model Random Forest dapat dengan sangat baik mengklasifikasikan data, dengan kesalahan klasifikasi yang sangat minimal.
+Rekomendasi ini menunjukkan bahwa anime yang memiliki genre yang mirip dengan Fullmetal Alchemist: Brotherhood (misalnya, dalam hal tema aksi, petualangan, drama, dan fantasi) akan mendapatkan skor Cosine Similarity yang lebih tinggi. Oleh karena itu, anime dengan skor yang lebih tinggi seperti Fullmetal Alchemist dan Fullmetal Alchemist: The Sacred Star of Milos lebih disarankan sebagai pilihan yang lebih relevan, sedangkan yang lain tetap dapat dianggap sebagai pilihan yang layak untuk penggemar genre serupa.
 
-Model Decision Tree juga menunjukkan kinerja yang sangat baik, dengan hasil yang hampir serupa dengan Random Forest, yaitu akurasi, presisi, recall, dan F1-Score masing-masing mencapai 98.24%. Meskipun sedikit lebih rendah dibandingkan Random Forest, Decision Tree tetap memberikan performa yang sangat baik dalam klasifikasi data.
+### Evaluasi Presisi
+Perhitungan Presisi: Misalkan kita menetapkan threshold bahwa rekomendasi dengan Cosine Similarity > 0.8 dianggap relevan. Dari 5 rekomendasi, semuanya memiliki nilai Cosine Similarity di atas 0.8, yang berarti semuanya relevan. Dengan demikian, presisi untuk sistem rekomendasi ini adalah: Presisi = Jumlah rekomendasi relevan / Jumlah total rekomendasi = 5/5 = 1.0
 
-Di sisi lain, Logistic Regression memiliki hasil yang cukup baik dengan akurasi 84.49%, presisi 84.92%, recall 84.49%, dan F1-Score 84.47%. Meskipun lebih rendah dibandingkan Random Forest dan Decision Tree, Logistic Regression masih menunjukkan performa yang solid, namun kurang optimal dibandingkan dengan model lainnya.
+Artinya, 100% dari rekomendasi yang diberikan relevan menurut threshold yang kita tentukan.
 
-Terakhir, Naive Bayes menunjukkan hasil yang lebih rendah dengan akurasi 75.54%, presisi 75.59%, recall 75.54%, dan F1-Score 75.49%. Hasil ini mengindikasikan bahwa model Naive Bayes kurang efektif dibandingkan dengan model lainnya dalam hal klasifikasi data pada dataset ini.
 
-Secara keseluruhan, Random Forest dan Decision Tree adalah model yang lebih unggul dalam mengklasifikasikan data, sedangkan Logistic Regression dan Naive Bayes memiliki performa yang lebih rendah. Oleh karena itu, untuk aplikasi yang membutuhkan akurasi dan performa tinggi, Random Forest atau Decision Tree akan menjadi pilihan yang lebih baik.
-
-Dalam laporan ini, kita mengevaluasi dampak dari model klasifikasi jamur yang dikembangkan terhadap Business Understanding yang telah diidentifikasi. Tujuan dari model ini adalah untuk mengatasi tantangan kritis dalam mengklasifikasikan jamur sebagai "dapat dimakan" atau "beracun," mengingat bahwa kesalahan dalam identifikasi dapat berdampak fatal bagi kesehatan manusia. Model ini dirancang untuk menjawab problem statement yang sangat spesifik: memberikan sistem klasifikasi yang akurat dan efisien berdasarkan karakteristik fisik jamur, yang sering menjadi dasar dalam identifikasi manual yang memakan waktu dan memerlukan keahlian tinggi.
-
-Evaluasi menunjukkan bahwa model yang dikembangkan, khususnya algoritma seperti Random Forest dan Decision Tree, berhasil mencapai tingkat akurasi yang tinggi (lebih dari 98%) dalam mengklasifikasikan jamur. Ini menunjukkan bahwa model sudah cukup menjawab problem statement dengan memberikan solusi yang meminimalkan risiko kesalahan identifikasi. Dengan tingkat akurasi yang tinggi, model ini juga berhasil mencapai tujuan untuk meningkatkan keamanan publik. Pengguna umum, seperti kolektor jamur, dapat lebih percaya diri dalam membedakan jamur beracun dari yang dapat dimakan, yang berpotensi mengurangi insiden keracunan.
-
-Dampak dari solution statement yang direncanakan juga cukup signifikan. Melalui pemrosesan data yang teliti dan pengembangan model yang dioptimalkan, model ini mampu memberikan prediksi yang akurat dengan memanfaatkan atribut fisik yang sudah tersedia dalam dataset. Implementasi alat identifikasi berbasis model ini akan sangat berguna, karena tidak hanya mengotomatisasi proses klasifikasi yang kompleks tetapi juga memberikan kemudahan akses bagi masyarakat umum tanpa memerlukan keahlian khusus. Dengan demikian, solusi ini memiliki dampak positif yang nyata dalam meningkatkan keselamatan dan efisiensi identifikasi jamur.
 
 ## Referensi
 [1] O. Tarawneh, M. Tarawneh, Y. Sharrab, and M. Husni, "Mushroom classification using machine-learning techniques," in AIP Conference Proceedings, vol. 2979, no. 1, Oct. 2023.
