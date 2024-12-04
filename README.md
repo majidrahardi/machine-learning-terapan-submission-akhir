@@ -12,11 +12,8 @@ Secara keseluruhan, tujuan dari sistem rekomendasi anime adalah untuk memberikan
 ## Business Understanding
 Dalam industri hiburan digital, terutama pada platform streaming anime, pemirsa menghadapi tantangan besar untuk menemukan konten yang relevan di tengah banyaknya pilihan yang tersedia. Platform-platform besar seperti Crunchyroll, Netflix, dan Funimation memiliki ribuan judul anime yang terus berkembang setiap tahun. Namun, dengan semakin banyaknya pilihan yang ada, pengguna sering kali merasa kesulitan untuk menemukan anime yang sesuai dengan minat pribadi mereka. Masalah utama yang muncul adalah kesenjangan antara preferensi pengguna dengan informasi yang tersedia tentang konten anime, yang membuat proses pencarian menjadi memakan waktu dan kurang efisien.
 
-### Problem Statements
-1. **Overload Pilihan**  
-   Platform streaming anime memiliki katalog yang sangat besar, yang dapat membuat pengguna kewalahan dalam memilih anime yang sesuai dengan minat mereka.
-   
-2. **Keterbatasan Rekomendasi yang Tepat**  
+### Problem Statements  
+1. **Keterbatasan Rekomendasi yang Tepat**  
    Tanpa adanya sistem yang baik, rekomendasi yang diberikan seringkali tidak relevan dengan selera individu pengguna. Hal ini menyebabkan penurunan kepuasan pengguna dan meningkatkan kemungkinan mereka untuk meninggalkan platform.
 
 ### Goals
@@ -120,7 +117,6 @@ Pada tahap *Mengatasi Missing Value*, kita menangani nilai yang hilang dalam dat
 
 Output di atas menunjukkan hasil dari proses pembersihan data dengan menggunakan fungsi dropna() untuk menghapus baris yang memiliki nilai kosong (missing values). Dataset yang dihasilkan, df_clean, kini berisi hanya baris-baris lengkap, tanpa adanya nilai yang hilang pada kolom manapun. Ini dapat membantu dalam analisis dan pemodelan yang memerlukan data yang bersih dan konsisten. Namun, proses ini juga mengakibatkan penghapusan beberapa baris, terutama yang memiliki nilai kosong pada kolom seperti genre, type, dan rating, yang dapat menyebabkan hilangnya informasi penting terkait beberapa anime. Meskipun demikian, dataset yang telah dibersihkan ini lebih mudah dikelola dan digunakan dalam model pembelajaran mesin atau analisis lanjutan, meski harus diingat bahwa penggunaan dropna() mengorbankan data yang tidak lengkap.
 
-## Model Development dengan Content Based Filtering
 ### TF-IDF Vectorizer
 
 - ```python
@@ -154,6 +150,7 @@ Fungsi Penting dalam Proses TF-IDF:
 
 TF-IDF memberikan wawasan tentang seberapa penting genre tertentu dalam konteks anime tertentu. Genre dengan nilai yang lebih tinggi dianggap lebih relevan atau lebih penting dalam anime tersebut. Anime dengan genre yang dominan seperti Kimi no Na wa. (dengan genre supernatural) atau Fullmetal Alchemist: Brotherhood (dengan genre action dan adventure) menunjukkan bahwa nilai TF-IDF mencerminkan pentingnya genre-genre tersebut dalam anime tersebut, dibandingkan dengan anime lainnya dalam dataset.
 
+## Model Development dengan Content Based Filtering
 ### Cosine Similarity
 - ```python
 	print(cosine_sim_df.head())
