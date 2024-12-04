@@ -162,7 +162,7 @@ Kode tersebut memiliki luaran:
 Cosine Similarity dalam konteks ini digunakan untuk membandingkan kemiripan antar anime berdasarkan genre mereka. Nilai mendekati 1.0 menunjukkan kemiripan yang tinggi, sedangkan nilai mendekati 0.0 menunjukkan perbedaan besar dalam genre. Anime seperti Kimi no Na wa. dan Fullmetal Alchemist: Brotherhood memiliki sedikit kemiripan karena genre yang sangat berbeda, sementara anime dalam satu franchise atau dengan tema serupa (seperti Gintama° dan Gintama') memiliki nilai kemiripan yang sangat tinggi. Steins;Gate sangat berbeda dari anime lain dalam dataset ini, yang tercermin dalam nilai 0.0 dengan anime lain yang memiliki genre berbeda seperti Kimi no Na wa.
 
 
-## Evaluation
+### Result
 - ```python
 	anime_name = 'Fullmetal Alchemist: Brotherhood'
 	recommendations = get_recommendations(anime_name, cosine_sim_df, top_n=5)
@@ -175,7 +175,7 @@ Kode tersebut memiliki luaran:
 
 Rekomendasi ini menunjukkan bahwa anime yang memiliki genre yang mirip dengan Fullmetal Alchemist: Brotherhood (misalnya, dalam hal tema aksi, petualangan, drama, dan fantasi) akan mendapatkan skor Cosine Similarity yang lebih tinggi. Oleh karena itu, anime dengan skor yang lebih tinggi seperti Fullmetal Alchemist dan Fullmetal Alchemist: The Sacred Star of Milos lebih disarankan sebagai pilihan yang lebih relevan, sedangkan yang lain tetap dapat dianggap sebagai pilihan yang layak untuk penggemar genre serupa.
 
-### Evaluasi Presisi
+## Evaluasi Presisi
 Perhitungan Presisi: Misalkan kita menetapkan threshold bahwa rekomendasi dengan Cosine Similarity > 0.8 dianggap relevan. Dari 5 rekomendasi, semuanya memiliki nilai Cosine Similarity di atas 0.8, yang berarti semuanya relevan. Dengan demikian, presisi untuk sistem rekomendasi ini adalah: Presisi = Jumlah rekomendasi relevan / Jumlah total rekomendasi = 5/5 = 1.0
 
 Artinya, 100% dari rekomendasi yang diberikan relevan menurut threshold yang kita tentukan. Dengan demikian diharapkan dapat mencapai tujuan utama studi dilakukan yaitu Meningkatkan Pengalaman Pengguna.
